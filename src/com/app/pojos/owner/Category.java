@@ -15,6 +15,7 @@ public class Category {
 	//One Category HAS-A Many Menu
 	List<Menu> menuList = new ArrayList<>();
 	
+	
 	public Category() {
 		System.out.println("In Pojo :: Category :: ctor");
 	}
@@ -49,7 +50,7 @@ public class Category {
 		return "Category [categoryId=" + categoryId + ", categoryName=" + categoryName + "]";
 	}
 
-	//================Category-Menu :: One Category HAS-A Many Menu================
+	//=================Category-Menu :: One Category HAS-A Many Menu================
 	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	public List<Menu> getMenuList() {
 		return menuList;
