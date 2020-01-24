@@ -1,8 +1,12 @@
 package com.app.pojos.owner;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "menu")
@@ -18,15 +22,15 @@ public class Menu {
 	//Many OrderItems HAS-A One Order
 	Category category;
 	
-	//Many Menu HAS-A One DailyMenu
-	//private DailyMenu dailyMenu;
+	//One Menu HAS-A Many DailyMenu
+	List<DailyMenu> dailyMenuList = new ArrayList<>();
 		
 	public Menu() {
 		System.out.println("In Pojo :: Menu :: ctor");
 	}
 
 	public Menu(int categoryId, String menuName, String menuDescription, double menuPrice, int menuQuantityAvailable,
-			boolean menuIsAvailable, MenuType menu) {
+			boolean menuIsAvailable, DailyMenuType menu) {
 		super();
 		this.menuName = menuName;
 		this.menuDescription = menuDescription;
@@ -105,20 +109,24 @@ public class Menu {
 		public Category getCategory() {
 			return category;
 		}
-
+		
 		public void setCategory(Category category) {
 			this.category = category;
 		}
+
+	//================Menu-DailyMenu :: One Menu HAS-A Many DailyMenu================
+		@OneToMany(mappedBy = "menu",cascade = CascadeType.ALL,orphanRemoval = true)
+		@JsonIgnore
+		public List<DailyMenu> getDailyMenuList() {
+			return dailyMenuList;
+		}
+
+		public void setDailyMenuList(List<DailyMenu> dailyMenuList) {
+			this.dailyMenuList = dailyMenuList;
+		}
+		
+				
 		
 
-	//================Menu-DailyMenu :: Many Menu HAS-A One DailyMenu================
-//		@ManyToOne
-//		@JoinColumn(name="mappedmenuid")
-//		public DailyMenu getDailyMenu() {
-//			return dailyMenu;
-//		}
-//
-//		public void setDailyMenu(DailyMenu dailyMenu) {
-//			this.dailyMenu = dailyMenu;
-//		}
+		
 }

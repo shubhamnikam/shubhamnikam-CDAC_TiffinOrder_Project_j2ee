@@ -22,6 +22,11 @@ import com.app.pojos.customer.Address;
 import com.app.pojos.customer.Cart;
 import com.app.pojos.customer.Order;
 import com.app.pojos.customer.Payment;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
 @Entity
 @Table(name = "users")
@@ -167,6 +172,7 @@ public class User {
 	}
 
 	// ================User-Cart :: One User HAS-A One Cart================
+	
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	public Cart getCart() {
 		return cart;

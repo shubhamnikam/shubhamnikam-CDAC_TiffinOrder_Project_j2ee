@@ -5,6 +5,11 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "category")
 public class Category {
@@ -41,17 +46,20 @@ public class Category {
 		return categoryName;
 	}
 
-	public void setCategoryName(String categoryName) {
+	public void setCategoryName(String categoryName) { 
 		this.categoryName = categoryName;
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Category [categoryId=" + categoryId + ", categoryName=" + categoryName + "]";
 	}
 
 	//=================Category-Menu :: One Category HAS-A Many Menu================
-	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "category", 
+			cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	@JsonIgnore
 	public List<Menu> getMenuList() {
 		return menuList;
 	}

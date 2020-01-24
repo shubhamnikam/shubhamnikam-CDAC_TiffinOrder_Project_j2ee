@@ -13,7 +13,7 @@ public class UserDaoImpl implements IUserDao{
 
 	@Autowired
 	SessionFactory sf;
-		
+			
 	@Override
 	public User validateUser(String email, String password) {
 		

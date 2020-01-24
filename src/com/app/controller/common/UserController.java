@@ -6,13 +6,12 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,79 +33,84 @@ public class UserController {
 	}
 
 	// ==========================goto view :: /user/signin : get=========================
-	@GetMapping("/signin")
-	public ModelAndView showSignInForm() {
-		System.out.println("In Controller :: UserController :: showSignInForm()");
-		return new ModelAndView("/user/signin");
-	}
+	
+//	 @GetMapping("/signin") public ModelAndView showSignInForm() {
+//	  System.out.println("In Controller :: UserController :: showSignInForm()");
+//	  return new ModelAndView("/user/signin");
+//	  }
+//	 
 
 
 	// ==========================signin : post=========================
-	@PostMapping("/signin")
-	public ModelAndView processSignInForm(Model map, HttpSession hs,
-			@RequestParam String email, @RequestParam String password) {
-		
-		System.out.println("In Controller :: UserController :: processSignInForm()");
-		
-		User user = null;
-		
-		try {
-			// get validated user record
-			user = iUserDao.validateUser(email, password);
+	 @PostMapping(value = "/signin", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+		public ModelAndView processSignInForm(Model map, HttpSession hs, @RequestBody User incommingUser) {
 
-			System.out.println("User :: " + user);
+			System.out.println("In Controller :: UserController :: processSignInForm()");
 
-			// httpsession :: loggedInUserDetails_httpSessionScope
-			hs.setAttribute("loggedInUserDetails_httpSessionScope", user);
+			User user = null;
 
-			// check for owner or customer
-			if (user.getUserRole().equals(UserRoleType.OWNER)) {
-				// go to owner home dashboard UI
-				System.out.println("owner");
-				return new ModelAndView("redirect:/owner/home");
-			} else if (user.getUserRole().equals(UserRoleType.CUSTOMER)) {
-				// go to customer menu UI
-				System.out.println("customer");
+			try {
+				user = iUserDao.validateUser(incommingUser.getUserEmail(), incommingUser.getUserPassword());
+				
+				
+				System.out.println("++++++++++User :: " + user);
+				
+				
+				hs.setAttribute("loggedInUserDetails_hs", user);
+				User u = (User) hs.getAttribute("loggedInUserDetails_hs");
+				
 
-				return new ModelAndView("redirect:/customer/menu");
-			} else {
-				return new ModelAndView("/error/errorpage");
+				System.out.println("------------User :: " + u);
+				
+				
+				// check for owner or customer
+				if (user.getUserRole().equals(UserRoleType.OWNER)) {
+					// go to owner home dashboard UI
+					System.out.println("owner");
+					return new ModelAndView("redirect:/owner/home");
+				} else if (user.getUserRole().equals(UserRoleType.CUSTOMER)) {
+					// go to customer menu UI
+					System.out.println("customer 1");
+					return new ModelAndView("redirect:/customer/home");
+				} else {
+					return new ModelAndView("/error/errorpage");
+				}
+
+			} catch (RuntimeException e) {
+				// validated user record not found
+				if (user == null) {
+					map.addAttribute("errorMsg_loginFailed_requestScopeSession",
+							"Invalid credential, Please try again....");
+					e.printStackTrace();
+					return new ModelAndView("/user/signin");
+				}
 			}
-
-		} catch (RuntimeException e) {
-			// validated user record not found
-			if (user == null) {
-				map.addAttribute("errorMsg_loginFailed_requestScopeSession",
-						"Invalid credential, Please try again....");
-				e.printStackTrace();
-				return new ModelAndView("/user/signin");
-			}
+			return null;
 		}
-		return null;
-	}
-	
+
 	// ==========================goto view :: /user/signup : get=========================
-	@GetMapping("/signup")
-	public ModelAndView showSignUpForm() {
-		System.out.println("In Controller :: UserController :: showSignUpForm()");
-		return new ModelAndView("/user/signup");
-	}
+//	@GetMapping("/signup")
+//	public ModelAndView showSignUpForm() {
+//		System.out.println("In Controller :: UserController :: showSignUpForm()");
+//		return new ModelAndView("/user/signup");
+//	}
 	
 	
 	// ==========================signup : post=========================
 	@PostMapping("/signup")
 	public ModelAndView processSignUpForm(Model map, 
-			@RequestParam String name, @RequestParam String email, 
-			@RequestParam String password, @RequestParam String phone) {
+			@RequestBody User incommingUser) {
 		System.out.println("In Controller :: UserController :: processSignUpForm()");
 
-		User userSignUpDetails = new User(name, email,
-				phone, password, new Date(), UserRoleType.CUSTOMER);
+		User userSignUpDetails = new User(
+				incommingUser.getUserName(), incommingUser.getUserEmail(),
+				incommingUser.getUserPhone(), incommingUser.getUserPassword(),
+				new Date(), UserRoleType.CUSTOMER);
 		
 		iUserDao.signUpUserWithDetails(userSignUpDetails);
 				
 		//goto signin page
-		return new ModelAndView("/user/signin");
+		return new ModelAndView("redirect:/customer/redirectsignup");
 		
 	}
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.app.pojos.common.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "cart")
@@ -28,7 +30,7 @@ public class Cart {
 		System.out.println("In Pojos :: Cart :: ctor");
 	}
 
-	public Cart( double cartPrice, Date cartDate, Date cartTime, OrderType orderType) {
+	public Cart(double cartPrice, Date cartDate, Date cartTime, OrderType orderType) {
 		super();
 		this.cartPrice = cartPrice;
 		this.cartDate = cartDate;
@@ -106,6 +108,7 @@ public class Cart {
 	// ================Cart-User :: One Cart HAS-A One User================
 	@OneToOne
 	@JoinColumn(name = "userid")
+	@JsonIgnore
 	public User getUser() {
 		return user;
 	}

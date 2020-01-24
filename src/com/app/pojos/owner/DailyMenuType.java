@@ -1,6 +1,6 @@
 package com.app.pojos.owner;
 
-public enum MenuType {
+public enum DailyMenuType {
 	
 	LUNCH, DINNER, SNACK
 	

@@ -3,6 +3,9 @@ package com.app.controller.owner;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,11 +27,14 @@ public class OwnerController {
 		System.out.println("In Controller :: OwnerController :: init()");
 	}
 
-	// ==========================owner : get=========================
+	// ==========================give navigation link=========
 	@GetMapping("/home")
-	public ModelAndView gotoOwnerHomeUIPage() {
-		System.out.println("In Controller :: UserController :: gotoOwnerHomeUIPage()");
-		return new ModelAndView("/owner/home");
+	public ResponseEntity<?> gotoCustomerMenuUIPage(Model map) {
+		map.addAttribute("userType", "OWNER");
+		map.addAttribute("userURL", "/owner/dashboard");
+		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
-	
+
+	// ==========================give menu data================
+
 }

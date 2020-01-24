@@ -10,8 +10,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-
-
 	<form method="post">
 		<table style="background-color: white; margin: auto;">
 			<tr>
@@ -35,7 +33,6 @@
 				<td><input type="submit" value="SignUp" /></td>
 			</tr>
 		</table>
-
 	</form>
 </body>
 </html>

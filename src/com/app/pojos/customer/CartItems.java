@@ -45,6 +45,7 @@ public class CartItems {
 		this.cartId = cartId;
 	}
 
+	@Column(name="cartitemsid", nullable = false)
 	public Integer getCartItemsId() {
 		return cartItemsId;
 	}
@@ -55,6 +56,7 @@ public class CartItems {
 	}
 
 
+	@Column(name="menuid", nullable = false)
 	public int getMenuId() {
 		return menuId;
 	}
