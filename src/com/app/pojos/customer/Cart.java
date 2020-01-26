@@ -7,6 +7,7 @@ import java.util.List;
 import javax.persistence.*;
 
 import com.app.pojos.common.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -61,6 +62,7 @@ public class Cart {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "date")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	public Date getCartDate() {
 		return cartDate;
 	}
@@ -71,6 +73,7 @@ public class Cart {
 
 	@Temporal(TemporalType.TIME)
 	@Column(name = "time")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	public Date getCartTime() {
 		return cartTime;
 	}

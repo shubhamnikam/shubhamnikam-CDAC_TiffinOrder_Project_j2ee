@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.app.dao.common.IUserDao;
 import com.app.dao.customer.ICustomerDao;
 import com.app.pojos.common.User;
 import com.app.pojos.customer.Cart;
@@ -33,20 +34,27 @@ public class CustomerController {
 
 	@Autowired
 	private ICustomerDao iCustomerDao;
-
+	@Autowired
+	private IUserDao iUserDao;
+	
 	@PostConstruct
 	public void init() {
 		System.out.println("In Controller :: CustomerController :: init()");
 	}
 
-	// ==========================give navigation link=========
+	// ==========================give after signin navigation link=========
 	@GetMapping("/home")
-	public ResponseEntity<?> gotoCustomerMenuUIPage(Model map) {
+	public ResponseEntity<?> gotoCustomerMenuUIPage(Model map, HttpSession hs) {
+		
+		User currentUserDetails = (User) hs.getAttribute("userDetails");
+		
+		map.addAttribute("currentUserDetails", currentUserDetails);
 		map.addAttribute("userType", "CUSTOMER");
 		map.addAttribute("userURL", "/customer/menu");
+		
 		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
-
+	
 	// ===================give navigation link after registration===============
 	@GetMapping("/redirectsignup")
 	public ResponseEntity<?> gotoRedirectSigninPageFromSignUp(Model map) {
@@ -54,13 +62,12 @@ public class CustomerController {
 		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
 
-
-	// ==========================give menu data=========
+	
+	// ==========================give menu data=================
 	@GetMapping("/menu/{dailyUserMenuType}")
-	public ResponseEntity<?> processCustomerMenuUIPage(Model map, 
-			HttpSession hs, @PathVariable String dailyUserMenuType) {
+	public ResponseEntity<?> processCustomerMenuUIPage(Model map,
+			@PathVariable String dailyUserMenuType) {
 
-		System.out.println("In Controller :: CustomerController :: gotoCustomerMenuUIPage()");
 
 		String tempDailyMenuType = dailyUserMenuType;
 
@@ -74,10 +81,6 @@ public class CustomerController {
 			tempDailyMenuType = "SNACK";
 		}
 
-
-		User u = (User) hs.getAttribute("loggedInUserDetails_hs");
-		System.out.println("<============>"+u);
-
 		List<Menu> menuList = iCustomerDao.showMenuItems(tempDailyMenuType);
 
 		map.addAttribute("userType", "CUSTOMER");
@@ -86,73 +89,64 @@ public class CustomerController {
 
 		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
-	
-	//===================add data to cart====================
 
-	@PostMapping(value="/cart",
-			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ModelAndView processCartItemsForm(RedirectAttributes flashMap,
-			@RequestBody Cart cart, HttpSession hs) {
-		System.out.println("In Controller :: cart");
-		
-		System.out.println(hs.getId()); 
+	// ===================add data to cart==========================
 
-		User u = (User) hs.getAttribute("loggedInUserDetails_hs");
-		System.out.println("============>"+ u);
+	@PostMapping(value = "/cart/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ModelAndView processCartForm(@PathVariable String userId, HttpSession hs, @RequestBody Cart cart) {
 		
-		Cart tempCart = new Cart(cart.getCartPrice(),cart.getCartDate(),
-				cart.getCartTime(), cart.getOrderType());
 		
-		//u.setCart(tempCart);
-		tempCart.setUser(u);
+		Cart tempCart = cart;
 		
-		//tempCart.getUser().setUserId(2);
-		//System.out.println(tempCart.getUser().getUserId());
-		
-		//persist using dao
+		User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
+		tempCart.setUser(tempUser);
+
 		iCustomerDao.sendCartDataToDB(tempCart);
 		
-		flashMap.addFlashAttribute("cartId", tempCart.getCartId());
-		
-		
+		//for getting cart Id
+		hs.setAttribute("cartId_hs",tempCart.getCartId());
+
 		System.out.println("====================");
+		System.out.println(tempUser);
 		System.out.println(tempCart);
-		System.out.println(u);	
 		System.out.println(tempCart.getCartId());
 		System.out.println("====================");
-		
-		return new ModelAndView("redirect:/customer/redirectcart");
-		
+	
+		return new ModelAndView("redirect:/cart/redirectcart");
+
 	}
-	
-	@GetMapping("/redirectcart")
-	public ResponseEntity<?> processRedirectSigninPageFromSignUp(RedirectAttributes flashMap,Model map) {
-		//goto cart page
-		map.addAttribute("cartId",flashMap.getAttribute("cartId"));
-		return new ResponseEntity<Model>(map, HttpStatus.OK);
-	}
-	
-	
-	//===================add data to cartItems====================
-	@PostMapping(value = "/cartitems", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-	public ResponseEntity<?> processCartItemsForm(Model map, 
-			@RequestBody CartItems cartItems) {
+
+
+
+	// ===================add data to cartItems====================
+	@PostMapping(value = "/cartitems/{cartId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public ModelAndView processCartItemsForm(@PathVariable String cartId, Model map, @RequestBody List<CartItems> cartList) {
+		
 		System.out.println("In Controller :: cartItems");
 
-					
-		CartItems tempCartItems = new CartItems(
-				cartItems.getCartId(),cartItems.getMenuId(),
-				cartItems.getCartItemsMenuName(), cartItems.getCartItemsPrice(),
-				cartItems.getCartItemsQuantity(), cartItems.getCartItemsTotalPrice());
 		
-		iCustomerDao.sendCartItemsDataToDB(tempCartItems);
+		Cart tempCart = iCustomerDao.getCartById(Integer.parseInt(cartId));	
+		List<CartItems> tempCartItemsList = cartList;
 				
-				
-		//goto cart page
-		map.addAttribute("cartURL", "/customer/cart");
-		return new ResponseEntity<Model>(map, HttpStatus.OK);
+		for (CartItems cartItems : tempCartItemsList) {
+
+			CartItems items = new CartItems(
+					cartItems.getMenuId(),
+					cartItems.getCartItemsMenuName(),
+					cartItems.getCartItemsPrice(),
+					cartItems.getCartItemsQuantity(),
+					cartItems.getCartItemsTotalPrice()
+					);
+			
+			items.setCart(tempCart);
+			
+			System.out.println(items);
+			
+			iCustomerDao.sendCartItemsDataToDB(items);
+		}
 		
+		return new ModelAndView("redirect:/cart/redirectcartitems");
+
 	}
-
-
+	
 }

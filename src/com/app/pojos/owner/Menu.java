@@ -29,8 +29,8 @@ public class Menu {
 		System.out.println("In Pojo :: Menu :: ctor");
 	}
 
-	public Menu(int categoryId, String menuName, String menuDescription, double menuPrice, int menuQuantityAvailable,
-			boolean menuIsAvailable, DailyMenuType menu) {
+	public Menu(String menuName, String menuDescription, double menuPrice, int menuQuantityAvailable,
+			boolean menuIsAvailable) {
 		super();
 		this.menuName = menuName;
 		this.menuDescription = menuDescription;

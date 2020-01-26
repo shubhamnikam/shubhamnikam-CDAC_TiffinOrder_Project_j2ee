@@ -7,7 +7,6 @@ import javax.persistence.*;
 public class CartItems {
 
 	private Integer cartItemsId;
-	private int cartId;
 	private int menuId;
 	private String cartItemsMenuName;
 	private double cartItemsPrice;
@@ -23,10 +22,9 @@ public class CartItems {
 	}
 	
 	
-	public CartItems(int cartId, int menuId, String cartItemsMenuName, double cartItemsPrice, int cartItemsQuantity,
+	public CartItems(int menuId, String cartItemsMenuName, double cartItemsPrice, int cartItemsQuantity,
 			double cartItemsTotalPrice) {
 		super();
-		this.cartId = cartId;
 		this.menuId = menuId;
 		this.cartItemsMenuName = cartItemsMenuName;
 		this.cartItemsPrice = cartItemsPrice;
@@ -34,18 +32,10 @@ public class CartItems {
 		this.cartItemsTotalPrice = cartItemsTotalPrice;
 	}
 
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="id", nullable = false)
-	public int getCartId() {
-		return cartId;
-	}
-
-	public void setCartId(int cartId) {
-		this.cartId = cartId;
-	}
-
-	@Column(name="cartitemsid", nullable = false)
 	public Integer getCartItemsId() {
 		return cartItemsId;
 	}
@@ -54,7 +44,15 @@ public class CartItems {
 	public void setCartItemsId(Integer cartItemsId) {
 		this.cartItemsId = cartItemsId;
 	}
-
+	
+//	@Column(name="cartid", nullable = false)
+//	public int getCartId() {
+//		return cartId;
+//	}
+//
+//	public void setCartId(int cartId) {
+//		this.cartId = cartId;
+//	}
 
 	@Column(name="menuid", nullable = false)
 	public int getMenuId() {
@@ -109,12 +107,6 @@ public class CartItems {
 		this.cartItemsTotalPrice = cartItemsTotalPrice;
 	}
 
-	@Override
-	public String toString() {
-		return "CartItems [cartItemsId=" + cartItemsId + ", cartId=" + cartId + ", menuId=" + menuId
-				+ ", cartItemsMenuName=" + cartItemsMenuName + ", cartItemsPrice=" + cartItemsPrice
-				+ ", cartItemsQuantity=" + cartItemsQuantity + ", cartItemsTotalPrice=" + cartItemsTotalPrice + "]";
-	}
 	
 	
 	//================CartItems-Cart :: Many CartItems HAS-A One Cart================

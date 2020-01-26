@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.app.pojos.common.User;
 import com.app.pojos.customer.Cart;
 import com.app.pojos.customer.CartItems;
 import com.app.pojos.owner.DailyMenu;
@@ -41,6 +42,20 @@ public class CustomerDaoImpl implements ICustomerDao {
 	@Override
 	public void sendCartItemsDataToDB(CartItems cartItems) {
 		sf.getCurrentSession().persist(cartItems);
+	}
+
+	@Override
+	public Cart getCartById(int cartId) {
+		String jpql = "select c from Cart c where c.cartId ="+cartId;
+
+		return sf.getCurrentSession()
+				.createQuery(jpql, Cart.class)
+				.getSingleResult();
+	}
+
+	@Override
+	public void addNewMenu(Menu menu) {
+		sf.getCurrentSession().persist(menu);
 	}
 
 }

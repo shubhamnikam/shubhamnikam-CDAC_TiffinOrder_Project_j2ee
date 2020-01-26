@@ -31,4 +31,20 @@ public class UserDaoImpl implements IUserDao{
 		sf.getCurrentSession().persist(user);
 	}
 
+	@Override
+	public User getUserById(int userId) {
+		String jpql = "select u from User u where u.userId ="+userId;
+
+		return sf.getCurrentSession()
+				.createQuery(jpql, User.class)
+				.getSingleResult();
+	}
+
+	@Override
+	public void addNewUser(User user) {
+		
+		sf.getCurrentSession().persist(user);
+		
+	}
+
 }

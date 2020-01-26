@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,6 +25,7 @@ import com.app.pojos.customer.Order;
 import com.app.pojos.customer.Payment;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
@@ -54,6 +56,10 @@ public class User {
 
 	public User() {
 		System.out.println("In Pojos :: User :: ctor");
+	}
+	
+	public User(int userId) {
+		this.userId = userId;
 	}
 
 	public User(String userName, String userEmail, String userPhone, String userPassword, Date userJoinDate,
@@ -116,6 +122,7 @@ public class User {
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "joindate")
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	public Date getUserJoinDate() {
 		return userJoinDate;
 	}
@@ -142,7 +149,8 @@ public class User {
 	}
 
 	// ================User-Address :: One User HAS-A Many Address================
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, 
+			orphanRemoval = true, fetch = FetchType.EAGER)
 	public List<Address> getAddressList() {
 		return addressList;
 	}
@@ -153,6 +161,7 @@ public class User {
 
 	// ================User-Payment :: One User HAS-A Many Payment================
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	public List<Payment> getPaymentList() {
 		return paymentList;
 	}
@@ -163,6 +172,7 @@ public class User {
 
 	// ================User-Order :: One User HAS-A One Order================
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	public Order getOrder() {
 		return order;
 	}
@@ -174,6 +184,7 @@ public class User {
 	// ================User-Cart :: One User HAS-A One Cart================
 	
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonIgnore
 	public Cart getCart() {
 		return cart;
 	}

@@ -20,6 +20,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.app.pojos.common.User;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name = "orders")
@@ -85,6 +86,7 @@ public class Order {
 	
 	@Temporal(TemporalType.DATE)
 	@Column(name="date", nullable = false)
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	public Date getOrderDate() {
 		return orderDate;
 	}
