@@ -184,7 +184,8 @@ public class User {
 	// ================User-Cart :: One User HAS-A One Cart================
 	
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonIgnore
+	//@JsonIgnore
+	@JsonBackReference
 	public Cart getCart() {
 		return cart;
 	}

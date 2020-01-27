@@ -23,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.app.dao.common.IUserDao;
 import com.app.dao.customer.ICustomerDao;
 import com.app.pojos.common.User;
+import com.app.pojos.customer.Address;
 import com.app.pojos.customer.Cart;
 import com.app.pojos.customer.CartItems;
 import com.app.pojos.owner.Menu;
@@ -149,4 +150,44 @@ public class CustomerController {
 
 	}
 	
+	//======================add Address================
+	@PostMapping(value = "/addAddress/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	public void processAddAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
+		
+		Address tempAddress = address;
+		
+		User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
+		tempAddress.setUser(tempUser);
+
+		iCustomerDao.sendAddressDataToDB(tempAddress);		
+
+	}
+	
+	
+	//======================Edit Profile================
+//	@PostMapping(value = "/edit/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//	public void processEditAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
+//		
+//		Address tempAddress = address;
+//		
+//		User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
+//		tempAddress.setUser(tempUser);
+//
+//		iCustomerDao.sendAddressDataToDB(tempAddress);		
+//
+//	}
+//	
+//	//======================Edit Address================
+//		@PostMapping(value = "/addAddress/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+//		public void processEditAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
+//			
+//			Address tempAddress = address;
+//			
+//			User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
+//			tempAddress.setUser(tempUser);
+//
+//			iCustomerDao.sendAddressDataToDB(tempAddress);		
+//
+//		}
+
 }

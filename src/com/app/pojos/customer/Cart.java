@@ -99,7 +99,9 @@ public class Cart {
 	}
 
 	// ================CartItems-CartItems :: One Cart HAS-A Many CartItems================
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL,
+			orphanRemoval = true)
+	@JsonIgnore
 	public List<CartItems> getCartItemsList() {
 		return cartItemsList;
 	}
@@ -111,7 +113,8 @@ public class Cart {
 	// ================Cart-User :: One Cart HAS-A One User================
 	@OneToOne
 	@JoinColumn(name = "userid")
-	@JsonIgnore
+	//@JsonIgnore
+	@JsonManagedReference
 	public User getUser() {
 		return user;
 	}

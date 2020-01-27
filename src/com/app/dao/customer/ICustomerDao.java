@@ -3,6 +3,7 @@ package com.app.dao.customer;
 import java.util.List;
 
 import com.app.pojos.common.User;
+import com.app.pojos.customer.Address;
 import com.app.pojos.customer.Cart;
 import com.app.pojos.customer.CartItems;
 import com.app.pojos.owner.DailyMenu;
@@ -20,6 +21,8 @@ public interface ICustomerDao {
 	public Cart getCartById(int cartId);
 	
 	public void addNewMenu(Menu menu);
+	
+	public void sendAddressDataToDB(Address address);
 	
 
 }
