@@ -2,6 +2,8 @@ package com.app.pojos.customer;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "orderitems")
 public class OrderItems {
@@ -98,6 +100,7 @@ public class OrderItems {
 	
 	//================OrderItems-Order :: Many OrderItems HAS-A One Order================
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name="orderid")
 	public Order getOrder() {
 		return order;

@@ -12,6 +12,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.app.pojos.common.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "address")
@@ -120,6 +122,8 @@ public class Address {
 
 	//================Address-User :: Many Address HAS-A One User================
 	@ManyToOne
+	@JsonIgnore
+	@JsonManagedReference
 	@JoinColumn(name="userid")
 	public User getUser() {
 		return user;

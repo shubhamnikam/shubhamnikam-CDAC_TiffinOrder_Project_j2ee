@@ -2,6 +2,8 @@ package com.app.pojos.customer;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "cartitems")
 public class CartItems {
@@ -111,6 +113,7 @@ public class CartItems {
 	
 	//================CartItems-Cart :: Many CartItems HAS-A One Cart================
 	@ManyToOne
+	@JsonIgnore
 	@JoinColumn(name = "cartid")
 	public Cart getCart() {
 		return cart;

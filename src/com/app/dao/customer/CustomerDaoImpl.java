@@ -12,8 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.pojos.common.User;
 import com.app.pojos.customer.Address;
+import com.app.pojos.customer.AddressType;
 import com.app.pojos.customer.Cart;
 import com.app.pojos.customer.CartItems;
+import com.app.pojos.customer.Payment;
 import com.app.pojos.owner.DailyMenu;
 import com.app.pojos.owner.DailyMenuType;
 import com.app.pojos.owner.Menu;
@@ -69,6 +71,36 @@ public class CustomerDaoImpl implements ICustomerDao {
 	@Override
 	public void sendAddressDataToDB(Address address) {
 		sf.getCurrentSession().persist(address);
+	}
+	
+	@Override
+	public void sendPaymentDataToDB(Payment payment) {
+		sf.getCurrentSession().persist(payment);
+	}
+
+	@Override
+	public Address getAddressDataToDB(int userId, AddressType addressType) {
+		String jpql = "select a from Address a where a.user.userId ="+userId +" and a.addressType='" +addressType +"'"; 
+
+		return sf.getCurrentSession()
+				.createQuery(jpql, Address.class)
+				.getSingleResult();
+		
+	}
+
+	@Override
+	public Payment getPaymentDataToDB(int userId) {
+		String jpql = "select p from Payment p where p.user.userId ="+userId; 
+
+		return sf.getCurrentSession()
+				.createQuery(jpql, Payment.class)
+				.getSingleResult();
+		
+	}
+	
+	@Override
+	public void updateAddressDataToDB(Address address) {
+		sf.getCurrentSession().update(address);
 	}
 
 

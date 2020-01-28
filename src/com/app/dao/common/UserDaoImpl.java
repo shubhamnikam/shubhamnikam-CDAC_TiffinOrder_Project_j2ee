@@ -27,8 +27,9 @@ public class UserDaoImpl implements IUserDao{
 	}
 
 	@Override
-	public void signUpUserWithDetails(User user) {
-		sf.getCurrentSession().persist(user);
+	public Integer signUpUserWithDetails(User user) {
+		Integer userId = (Integer) sf.getCurrentSession().save(user);
+		return userId;
 	}
 
 	@Override

@@ -162,6 +162,7 @@ public class User {
 	// ================User-Payment :: One User HAS-A Many Payment================
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonIgnore
+	@JsonBackReference
 	public List<Payment> getPaymentList() {
 		return paymentList;
 	}

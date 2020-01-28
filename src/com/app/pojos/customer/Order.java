@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 
 import com.app.pojos.common.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "orders")
@@ -145,6 +146,7 @@ public class Order {
 	
 	//================Order-User :: One Order HAS-A One User================
 	@OneToOne
+	@JsonIgnore
 	@JoinColumn(name = "userid")
 	public User getUser() {
 		return user;

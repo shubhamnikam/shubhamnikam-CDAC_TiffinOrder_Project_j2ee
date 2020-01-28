@@ -7,7 +7,7 @@ public interface IUserDao {
 
 	public User validateUser(String email, String password);
 	
-	public void signUpUserWithDetails(User user); 
+	public Integer signUpUserWithDetails(User user); 
 	
 	public User getUserById(int userId);
 	

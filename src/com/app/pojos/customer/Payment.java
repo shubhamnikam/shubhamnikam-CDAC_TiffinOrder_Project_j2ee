@@ -5,6 +5,8 @@ import java.util.Date;
 import javax.persistence.*;
 
 import com.app.pojos.common.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "payment")
@@ -51,7 +53,7 @@ public class Payment {
 		this.paymentUPI = paymentUPI;
 	}
 	
-	@Column(name="cardnumber", nullable = false)
+	@Column(name="cardnumber")
 	public String getPaymentCardNumber() {
 		return paymentCardNumber;
 	}
@@ -61,7 +63,7 @@ public class Payment {
 	}
 	
 	@Temporal(TemporalType.DATE)
-	@Column(name="cardexpirydate", nullable = false)
+	@Column(name="cardexpirydate")
 	public Date getPaymentCardExpiryDate() {
 		return paymentCardExpiryDate;
 	}
@@ -70,7 +72,7 @@ public class Payment {
 		this.paymentCardExpiryDate = paymentCardExpiryDate;
 	}
 
-	@Column(name="cardcvv", nullable = false)
+	@Column(name="cardcvv")
 	public int getPaymentCardCVV() {
 		return paymentCardCVV;
 	}
@@ -88,6 +90,8 @@ public class Payment {
 
 	//================Address-User :: Many Payment HAS-A One User================
 		@ManyToOne
+		@JsonManagedReference
+		@JsonIgnore
 		@JoinColumn(name="userid")
 		public User getUser() {
 			return user;

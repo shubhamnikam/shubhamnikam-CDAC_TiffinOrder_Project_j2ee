@@ -113,7 +113,7 @@ public class Cart {
 	// ================Cart-User :: One Cart HAS-A One User================
 	@OneToOne
 	@JoinColumn(name = "userid")
-	//@JsonIgnore
+	@JsonIgnore
 	@JsonManagedReference
 	public User getUser() {
 		return user;
