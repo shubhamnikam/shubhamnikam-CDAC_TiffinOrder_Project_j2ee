@@ -105,7 +105,7 @@ public class CustomerController {
 		iCustomerDao.sendPaymentDataToDB(tempPayment);
 	}
 
-	// ==========================give menu data=================
+	// ==========================give menu data==================
 	@GetMapping("/menu/{dailyUserMenuType}")
 	public ResponseEntity<?> processCustomerMenuUIPage(Model map, @PathVariable String dailyUserMenuType) {
 
