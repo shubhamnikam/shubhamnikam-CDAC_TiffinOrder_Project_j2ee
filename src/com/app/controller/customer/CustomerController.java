@@ -209,54 +209,78 @@ public class CustomerController {
 
 		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
+
+	// =================update address==================
+	@PutMapping(value = "/updateaddress/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE,
+			MediaType.APPLICATION_XML_VALUE })
+	public void processUpdateAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
+
+		// get dao
+		Address tempAddress = null;
+
+		// type of address
+		String tempAddressType = address.getAddressType().toString();
+
+		// check type of address
+		if (tempAddressType.equals("HOME")) {
+			tempAddress = iCustomerDao.getAddressDataToDB(Integer.parseInt(userId), AddressType.HOME);
+		} else if (tempAddressType.equals("WORK")) {
+			tempAddress = iCustomerDao.getAddressDataToDB(Integer.parseInt(userId), AddressType.WORK);
+		}
+
+		// now insert
+		tempAddress.setAddressFieldOne(address.getAddressFieldOne());
+		tempAddress.setAddressFieldTwo(address.getAddressFieldTwo());
+		tempAddress.setAddressCity(address.getAddressCity());
+		tempAddress.setAddressPincode(address.getAddressPincode());
+		tempAddress.setAddressState(address.getAddressState());
+
+		// call dao to update
+		iCustomerDao.updateAddressDataToDB(tempAddress);
+
+	}
 	
-	//=================update address==================
-		@PutMapping(value = "/updateaddress/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE,
-				MediaType.APPLICATION_XML_VALUE })
-		public void processUpdateAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
-
-			Address tempAddress = address;
-
-			User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
-			tempAddress.setUser(tempUser);
-
-			iCustomerDao.updateAddressDataToDB(tempAddress);
-
-		}	
-
+	//===========get payment info================
 	@GetMapping(value = "/profilepayment/{userId}")
 	public ResponseEntity<?> processProfilePayment(Model map, @PathVariable String userId) {
 
 		Payment tempPayment = iCustomerDao.getPaymentDataToDB(Integer.parseInt(userId));
-		map.addAttribute("paymentDate", tempPayment);
+		map.addAttribute("paymentData", tempPayment);
+
+		return new ResponseEntity<Model>(map, HttpStatus.OK);
+	}
+	
+	//===========getusersorder============
+	@GetMapping(value = "/getusersorder/{userId}")
+	public ResponseEntity<?> processGetUsersOrder(Model map, @PathVariable String userId) {
+
+		System.out.println("=======In getLunchOrderList=======");
+
+		List<Cart> tempLunchList = iCustomerDao.getAllOrdersList(Integer.parseInt(userId),1);
+		map.addAttribute("orderLunchList", tempLunchList);
+
+		System.out.println("=======In getDinnerOrderList=======");
+
+		List<Cart> tempDinnerList = iCustomerDao.getAllOrdersList(Integer.parseInt(userId),2);
+		map.addAttribute("orderDinnerList", tempDinnerList);
 
 		return new ResponseEntity<Model>(map, HttpStatus.OK);
 	}
 
-	// ======================Edit Profile================
-//	@PostMapping(value = "/edit/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-//	public void processEditAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
-//		
-//		Address tempAddress = address;
-//		
-//		User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
-//		tempAddress.setUser(tempUser);
-//
-//		iCustomerDao.sendAddressDataToDB(tempAddress);		
-//
-//	}
-//	
-//	//======================Edit Address================
-//		@PostMapping(value = "/addAddress/{userId}", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
-//		public void processEditAddress(@PathVariable String userId, HttpSession hs, @RequestBody Address address) {
-//			
-//			Address tempAddress = address;
-//			
-//			User tempUser = iUserDao.getUserById(Integer.parseInt(userId));
-//			tempAddress.setUser(tempUser);
-//
-//			iCustomerDao.sendAddressDataToDB(tempAddress);		
-//
-//		}
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

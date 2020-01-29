@@ -34,5 +34,8 @@ public interface ICustomerDao {
 	
 	public void updateAddressDataToDB(Address address);
 	
+	//get user orders list
+	public List<Cart> getAllOrdersList(int userId,int i); 
+	
 
 }

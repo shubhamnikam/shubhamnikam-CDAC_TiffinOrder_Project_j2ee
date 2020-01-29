@@ -120,26 +120,19 @@ public class OwnerDaoImpl implements IOwnerDao {
 	@Override
 	public Menu getMenuById(int menuId) {
 		String jpql = "select m from Menu m where m.menuId = " + menuId;
-
 		return sf.getCurrentSession().
 				createQuery(jpql, Menu.class).getSingleResult();
-	
 	}
 	
 	@Override
 	public void deleteMenuById(Menu menu) {
-		
 		sf.getCurrentSession().delete(menu);
-		
 	}
 
 	@Override
 	public List<Menu> getAllMenuList() {
-
 		String jpql = "select m from Menu m";
-
 		return sf.getCurrentSession().createQuery(jpql, Menu.class).getResultList();
-	
 	}
 
 	
